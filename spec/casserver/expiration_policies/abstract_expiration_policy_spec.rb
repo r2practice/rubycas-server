@@ -19,4 +19,16 @@ describe CASServer::ExpirationPolicies::AbstractExpirationPolicy do
       @policy.should_not respond_to :maximum_session_lifetime=
     end
   end
+
+  describe '.ticket_expired?(ticket)' do
+    before do
+      @policy = CASServer::ExpirationPolicies::AbstractExpirationPolicy
+    end
+
+    it "should raise an error telling us to override in the childclass" do
+      expect {
+        @policy.ticket_expired?(1)
+      }.to raise_error(RuntimeError)
+    end
+  end
 end

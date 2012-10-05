@@ -15,6 +15,10 @@ module CASServer
             undef_method :maximum_session_lifetime=
           end
         end
+
+        def ticket_expired?(ticket)
+          raise "ticket_expired? not implemented in AbstractExpirationPolicy, please override in #{self.name}"
+        end
       end
     end
   end
