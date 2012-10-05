@@ -1,3 +1,5 @@
+require 'active_support'
+
 module CASServer
   module ExpirationPolicies
     class AbstractExpirationPolicy
