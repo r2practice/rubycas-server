@@ -16,7 +16,7 @@ module CASServer
       # implementation found in 
       # org.jasig.cas.ticket.support.HardTimeoutExpirationPolicy
       def ticket_expired?(ticket)
-        ticket.created_on < maximum_session_lifetime.seconds.ago
+        ticket.created_on < maximum_ticket_lifetime.seconds.ago
       end
     end
   end
