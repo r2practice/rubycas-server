@@ -27,7 +27,6 @@ class CreateInitialStructure < ActiveRecord::Migration
       t.string    'client_hostname',   :null => false
       t.string    'username',          :null => false
       t.text      'extra_attributes',  :null => true
-      t.text      'expiration_policy', :null => true
     end
 
     create_table 'casserver_pgt', :force => true do |t|
