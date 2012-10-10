@@ -5,8 +5,8 @@ require 'active_record/base'
 module CASServer::Model
 
   class Ticket < ActiveRecord::Base
-    def to_s
-      ticket
+    class << self
+      attr_accessor :expiration_policy
     end
 
     def self.cleanup(max_lifetime)
@@ -19,6 +19,14 @@ module CASServer::Model
 
         destroy_all(conditions)
       end
+    end
+
+    def to_s
+      ticket
+    end
+
+    def expiration_policy
+      self.class.expiration_policy
     end
   end
 
