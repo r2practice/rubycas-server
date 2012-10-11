@@ -153,6 +153,7 @@ module CASServer
         self.config[key] = val
       end
       init_database!
+      init_models!
       init_logger!
       init_authenticators!
     end
@@ -288,10 +289,15 @@ module CASServer
       ActiveRecord::Base.establish_connection(config[:database])
     end
 
+    def self.init_models!
+      # Assign the expiration policies
+    end
+
     configure do
       load_config_file(CONFIG_FILE)
       init_logger!
       init_database!
+      init_models!
       init_authenticators!
     end
 
