@@ -29,9 +29,16 @@ module CASServer
          Proc.new { settings.config[:public_dir] || File.join(root, "..", "..", "public") } )
 
     config = HashWithIndifferentAccess.new(
-      :maximum_unused_login_ticket_lifetime => 5.minutes,
-      :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
+      :allow_remember_me => false, # disable remember_me by default
+      :tgt_expiration_policy => "DefaultExpirationPolicy", # default to most strict timeout
       :maximum_session_lifetime => 2.days, # all tickets are deleted after this period of time
+
+      :lt_expiration_policy => "DefaultExpirationPolicy", # default to most strict timeout
+      :maximum_unused_login_ticket_lifetime => 5.minutes,
+
+      :st_expiration_policy => "DefaultExpirationPolicy", # default to most strict timeout
+      :maximum_unused_service_ticket_lifetime => 5.minutes, # CAS Protocol Spec, sec. 3.2.1 (recommended expiry time)
+
       :log => {:file => 'casserver.log', :level => 'DEBUG'},
       :uri_path => ""
     )
