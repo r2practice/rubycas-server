@@ -329,7 +329,9 @@ module CASServer::CAS
 
   module ClassMethods
     def init_models!
-
+      CASServer::Model::LoginTicket.expiration_policy = CASServer::ExpirationPolicies::DefaultExpirationPolicy.new(config[:maximum_unused_login_ticket_lifetime])
+      CASServer::Model::ServiceTicket.expiration_policy = CASServer::ExpirationPolicies::DefaultExpirationPolicy.new(config[:maximum_unused_service_ticket_lifetime])
+      CASServer::Model::TicketGrantingTicket.expiration_policy = CASServer::ExpirationPolicies::DefaultExpirationPolicy.new(config[:maximum_session_lifetime])
     end
   end
 end
