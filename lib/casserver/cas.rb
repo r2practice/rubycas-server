@@ -9,6 +9,12 @@ module CASServer::CAS
 
   include CASServer::Model
 
+  def self.included(app)
+    app.class_eval do
+      extend ClassMethods
+    end
+  end
+
   def generate_login_ticket
     # 3.5 (login ticket)
     lt = LoginTicket.new
@@ -320,4 +326,9 @@ module CASServer::CAS
   end
   module_function :clean_service_url
 
+  module ClassMethods
+    def init_models!
+
+    end
+  end
 end

@@ -289,10 +289,6 @@ module CASServer
       ActiveRecord::Base.establish_connection(config[:database])
     end
 
-    def self.init_models!
-      # Assign the expiration policies
-    end
-
     configure do
       load_config_file(CONFIG_FILE)
       init_logger!
