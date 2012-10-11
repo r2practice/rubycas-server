@@ -28,6 +28,10 @@ module CASServer::Model
     def expiration_policy
       self.class.expiration_policy
     end
+
+    def expired?
+      expiration_policy.ticket_expired?(self)
+    end
   end
 
   class LoginTicket < Ticket

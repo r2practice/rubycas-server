@@ -5,8 +5,7 @@ module CASServer
 end
 require 'casserver/model'
 
-describe CASServer::Model::Ticket, "#expiration_policy" do
-  let(:policy) { "A good policy" }
+describe CASServer::Model::Ticket do
   # keep ActiveRecord from flipping out
   before(:all) do
     CASServer::Model::Ticket.instance_variable_set(:@columns, [])
@@ -17,15 +16,33 @@ describe CASServer::Model::Ticket, "#expiration_policy" do
     CASServer::Model::Ticket.instance_variable_set(:@columns, nil)
   end
 
-  before do
-    CASServer::Model::Ticket.expiration_policy = policy
-    @ticket = CASServer::Model::Ticket.new
+  describe "#expiration_policy" do
+    let(:policy) { "A good policy" }
+
+    before do
+      CASServer::Model::Ticket.expiration_policy = policy
+      @ticket = CASServer::Model::Ticket.new
+    end
+
+    it "should delegate to the class level method" do
+      @ticket.expiration_policy.should == policy
+    end
   end
 
-  it "should delegate to the class level method" do
-    @ticket.expiration_policy.should == policy
+  describe "#expired?" do
+    before do
+      @ticket = CASServer::Model::Ticket.new
+      @policy = double
+      @policy.stub(:ticket_expired?).with(@ticket).and_return('Outlook Hazy')
+      CASServer::Model::Ticket.expiration_policy = @policy
+    end
+
+    it "should delegate to expiration_policy#ticket_expired?" do
+      @ticket.expired?.should == 'Outlook Hazy'
+    end
   end
 end
+
 describe CASServer::Model::LoginTicket, '.cleanup(max_lifetime, max_unconsumed_lifetime)' do
   let(:max_lifetime) { -1 }
   let(:max_unconsumed_lifetime) { -2 }
