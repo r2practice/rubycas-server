@@ -329,9 +329,27 @@ module CASServer::CAS
 
   module ClassMethods
     def init_models!
-      CASServer::Model::LoginTicket.expiration_policy = CASServer::ExpirationPolicies::DefaultExpirationPolicy.new(config[:maximum_unused_login_ticket_lifetime])
-      CASServer::Model::ServiceTicket.expiration_policy = CASServer::ExpirationPolicies::DefaultExpirationPolicy.new(config[:maximum_unused_service_ticket_lifetime])
-      CASServer::Model::TicketGrantingTicket.expiration_policy = CASServer::ExpirationPolicies::DefaultExpirationPolicy.new(config[:maximum_session_lifetime])
+      lt_policy_class = CASServer::ExpirationPolicies.const_get(config[:lt_expiration_policy])
+      lt_policy = lt_policy_class.new(config[:maximum_unused_login_ticket_lifetime])
+      CASServer::Model::LoginTicket.expiration_policy = lt_policy
+
+      st_policy_class = CASServer::ExpirationPolicies.const_get(config[:st_expiration_policy])
+      st_policy = st_policy_class.new(config[:maximum_unused_service_ticket_lifetime])
+      CASServer::Model::ServiceTicket.expiration_policy = st_policy
+      CASServer::Model::ProxyTicket.expiration_policy = st_policy
+
+      if config[:allow_remember_me]
+        policy_class = CASServer::ExpirationPolicies.const_get(config[:tgt_expiration_policy])
+        short_policy = policy_class.new(config[:maximum_session_lifetime])
+        remember_me_length = config[:remember_me_lifetime] || 90.days
+        long_policy = policy_class.new(remember_me_length)
+        delegator_policy = CASServer::ExpirationPolicies::RememberMeExpirationPolicy.new(short_policy,long_policy)
+        CASServer::Model::TicketGrantingTicket.expiration_policy = delegator_policy
+      else
+        policy_class = CASServer::ExpirationPolicies.const_get(config[:tgt_expiration_policy])
+        policy = policy_class.new(config[:maximum_session_lifetime])
+        CASServer::Model::TicketGrantingTicket.expiration_policy = policy
+      end
     end
   end
 end
