@@ -20,6 +20,7 @@ notice:
 label:
   username: "Username"
   password: "Password"
+  remember_me: "Remember Me"
   central_login_title: "Central Login"
 
 button:

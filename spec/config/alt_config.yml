@@ -42,6 +42,7 @@ log:
 
 enable_single_sign_out: true
 
+allow_remember_me: true
 #maximum_unused_login_ticket_lifetime: 300
 #maximum_unused_service_ticket_lifetime: 300
 

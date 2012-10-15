@@ -323,12 +323,14 @@ module CASServer
       # make sure there's no caching
       headers['Pragma'] = 'no-cache'
       headers['Cache-Control'] = 'no-store'
-      headers['Expires'] = (Time.now - 1.year).rfc2822
+      headers['Expires'] = 1.year.ago.rfc2822
 
       # optional params
       @service = clean_service_url(params['service'])
       @renew = params['renew']
       @gateway = params['gateway'] == 'true' || params['gateway'] == '1'
+
+      @allow_remember_me = config[:allow_remember_me]
 
       if tgc = request.cookies['tgt']
         tgt, tgt_error = validate_ticket_granting_ticket(tgc)
@@ -423,6 +425,9 @@ module CASServer
       @password = params['password']
       @lt = params['lt']
 
+      # Pass through remember me option if we can't login
+      @allow_remember_me = config[:allow_remember_me]
+
       # Remove leading and trailing widespace from username.
       @username.strip! if @username
       
@@ -476,7 +481,7 @@ module CASServer
           $LOG.info("Credentials for username '#{@username}' successfully validated using #{successful_authenticator.class.name}.")
           $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
 
-          if config[:allow_remember_me] && params[:remember_me]
+          if config[:allow_remember_me] && params[:rememberMe]
             extra_attributes[:remember_me] = true
           end
 

@@ -66,6 +66,13 @@ describe 'CASServer' do
       page.should have_xpath('//input[@id="service"]', :value => @target_service)
     end
 
+    it "should not display the remember me checkbox and label by default" do
+      visit "/login"
+
+      page.should_not have_content('Remember Me')
+      page.should_not have_xpath('//input[@id="rememberMe"]')
+    end
+
     it "uses appropriate localization based on Accept-Language header" do
       
       page.driver.options[:headers] = {'HTTP_ACCEPT_LANGUAGE' => 'pl'}
