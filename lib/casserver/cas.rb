@@ -41,6 +41,7 @@ module CASServer::CAS
     tgt.username = username
     tgt.extra_attributes = extra_attributes
     tgt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
+    tgt.last_activity = Time.now
     tgt.save!
     $LOG.debug("Generated ticket granting ticket '#{tgt.ticket}' for user" +
       " '#{tgt.username}' at '#{tgt.client_hostname}'" +
@@ -57,6 +58,7 @@ module CASServer::CAS
     st.granted_by_tgt_id = tgt.id
     st.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     st.save!
+    tgt.update_attributes(:last_activity => Time.now)
     $LOG.debug("Generated service ticket '#{st.ticket}' for service '#{st.service}'" +
       " for user '#{st.username}' at '#{st.client_hostname}'")
     st
@@ -64,14 +66,16 @@ module CASServer::CAS
 
   def generate_proxy_ticket(target_service, pgt)
     # 3.2 (proxy ticket)
+    tgt = pgt.service_ticket.granted_by_tgt
     pt = ProxyTicket.new
     pt.ticket = "PT-" + CASServer::Utils.random_string
     pt.service = target_service
     pt.username = pgt.service_ticket.username
     pt.granted_by_pgt_id = pgt.id
-    pt.granted_by_tgt_id = pgt.service_ticket.granted_by_tgt_id
+    pt.granted_by_tgt_id = tgt.id
     pt.client_hostname = @env['HTTP_X_FORWARDED_FOR'] || @env['REMOTE_HOST'] || @env['REMOTE_ADDR']
     pt.save!
+    tgt.update_attributes(:last_activity => Time.now)
     $LOG.debug("Generated proxy ticket '#{pt.ticket}' for target service '#{pt.service}'" +
       " for user '#{pt.username}' at '#{pt.client_hostname}' using proxy-granting" +
       " ticket '#{pgt.ticket}'")

@@ -67,14 +67,23 @@ describe CASServer::CAS do
     it "should set the tgt's client_hostname" do
       @tgt.client_hostname.should == @client_hostname
     end
+
+    it "should set the tgt's last_activity" do
+      @tgt.last_activity.should_not be_nil
+    end
   end
 
   describe "#generate_service_ticket(service, username, tgt)" do
     before do
       @username = 'testuser'
       @service = 'myservice.test'
-      @tgt = double(CASServer::Model::TicketGrantingTicket)
-      @tgt.stub(:id => rand(10000))
+      @tgt = CASServer::Model::TicketGrantingTicket.create({
+        :ticket => 'test-ticket',
+        :client_hostname => 'myhost.local',
+        :username => 'bjones',
+        :extra_attributes => {},
+        :last_activity => 6.hours.ago
+      })
       @st = @host.generate_service_ticket(@service, @username, @tgt)
     end
 
@@ -97,14 +106,25 @@ describe CASServer::CAS do
     it "should assoicate the ST with the supplied TGT" do
       @st.granted_by_tgt_id.should == @tgt.id
     end
+
+    it "should update the last_activity timestamp on the TGT" do
+      @tgt.last_activity.should > 2.seconds.ago
+    end
   end
 
   describe "#generate_proxy_ticket(target_service, pgt)" do
     before do
       @target_service = 'remoteservice.test'
+      @tgt = CASServer::Model::TicketGrantingTicket.create({
+        :ticket => 'test-ticket',
+        :client_hostname => 'myhost.local',
+        :username => 'bjones',
+        :extra_attributes => {},
+        :last_activity => 6.hours.ago
+      })
       @st = CASServer::Model::ServiceTicket.new({
         :username => 'joe',
-        :granted_by_tgt_id => rand(10000)
+        :granted_by_tgt => @tgt
       })
       @pgt = double(CASServer::Model::ProxyGrantingTicket)
       @pgt.stub({
@@ -125,6 +145,10 @@ describe CASServer::CAS do
 
     it "should start the ticket string with PT-" do
       @pt.ticket.should match /^PT-/
+    end
+
+    it "should update the TGT's last_activity timestamp" do
+      @tgt.last_activity.should > 2.seconds.ago
     end
   end
 end
