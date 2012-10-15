@@ -24,6 +24,19 @@
                size="32" tabindex="2" accesskey="p" autocomplete="off" />
       </td>
     </tr>
+    <% if @allow_remember_me %>
+      <tr>
+        <td id="remember-me-placeholder">
+        </td>
+        <td id="remember-me-container">
+          <input type="checkbox" id="rememberMe" name="rememberMe"
+                 tabindex="3" accesskey="r" value="rememberMe">
+          <label id="remember-me-label" for="rememberMe">
+            <%= t.label.remember_me %>
+          </label>
+        </td>
+      </tr>
+    <% end %>
     <tr>
       <td />
       <td id="submit-container">
