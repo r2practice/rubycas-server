@@ -476,6 +476,10 @@ module CASServer
           $LOG.info("Credentials for username '#{@username}' successfully validated using #{successful_authenticator.class.name}.")
           $LOG.debug("Authenticator provided additional user attributes: #{extra_attributes.inspect}") unless extra_attributes.blank?
 
+          if config[:allow_remember_me] && params[:remember_me]
+            extra_attributes[:remember_me] = true
+          end
+
           # 3.6 (ticket-granting cookie)
           tgt = generate_ticket_granting_ticket(@username, extra_attributes)
           response.set_cookie('tgt', tgt.to_s)
