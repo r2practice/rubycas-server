@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'casserver/authenticators/base'
 
 # NOT YET IMPLEMENTED

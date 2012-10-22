@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'crypt-isaac'
 
 # Misc utility function used throughout by the RubyCAS-Server.

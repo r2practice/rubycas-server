@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateInitialStructure < ActiveRecord::Migration
   def self.up
     # Oracle table names cannot exceed 30 chars...

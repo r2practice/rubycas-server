@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'casserver/authenticators/ldap'
 
 # Slightly modified version of the LDAP authenticator for Microsoft's ActiveDirectory.

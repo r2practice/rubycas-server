@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'sinatra/base'
 require 'casserver/localization'
 require 'casserver/utils'

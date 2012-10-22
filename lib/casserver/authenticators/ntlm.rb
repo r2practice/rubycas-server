@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # THIS AUTHENTICATOR DOES NOT WORK (not even close!)
 #
 # I started working on this but run into a wall, so I am commiting what I've got

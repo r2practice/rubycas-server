@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module CASServer::Model
   module Ticket
     def to_s
